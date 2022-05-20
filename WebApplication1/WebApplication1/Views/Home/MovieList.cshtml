@@ -1,0 +1,74 @@
+﻿@model WebApplication1.Models.ViewModel.ContactViewModel
+
+@{
+    ViewBag.Title = "Contact";
+}
+<h2>電影列表</h2>
+<h3>@ViewBag.Message</h3>
+
+<p>
+
+    @Html.ActionLink("Create New", "MovieEdit", "Home")
+
+    @using (Html.BeginForm())
+    {
+    <p>
+        電影名稱: @Html.TextBoxFor(c => c.Query.movieName)
+        <input type="submit" value="查詢" />
+    </p>
+}
+
+    <table class="table">
+
+        <tr>
+            <th>電影名稱</th>
+            <th>電影級別</th>
+            <th>男主角</th>
+            <th>功能</th>
+        </tr>
+
+        @foreach (var item in Model.Entities)
+        {
+            <tr>
+                <td>@item.MovieName</td>
+                <td>@item.Rate</td>
+                <td>@item.Actor</td>
+                <td>
+                    @Html.ActionLink("修改", "MovieEdit", new { @movieSn = item.MovieSn }) |
+                    <a href="javascript:MovieDelete('@item.MovieSn')">刪除</a>
+                    @*@Html.ActionLink("刪除", "MovieDelete", new { @movieSn = item.MovieSn })*@
+                </td>
+            </tr>
+        }
+
+    </table>
+
+    <script>
+    function MovieDelete(movieSn) {
+
+        var boolconfing = confirm("確定要刪除嗎?");
+        
+
+        if (boolconfing == true) {
+
+            console.log('debug');
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("MovieDelete","Home")',
+                data: { movieSn: movieSn },
+                success: function (result) {
+                    alert(result);
+                    window.location.reload();
+                }
+
+            })
+        }
+        else {
+
+            return;
+        }
+
+
+    }
+
+    </script>
